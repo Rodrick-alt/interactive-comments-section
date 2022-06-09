@@ -254,7 +254,7 @@ function App() {
 
         {/* Reply Prompt dropdown */}
         <div className={rFormStyle}>
-          <img className='form1' src={require(`./images/avatars/image-${props.theUser}.png`)} alt='' />
+          <img className='form1' src={require(`./images/avatars/image-juliusomo.png`)} alt='' />
           <textarea placeholder='Add a reply...'
             onChange={(event) => writeReply = (event.target.value)} />
           <button className='form1'
@@ -280,7 +280,7 @@ function App() {
     const [updateBtnStyle, setUpdateBtnStyle] = useState('update-btn-close');
     const [contentStyle, setContentStyle] = useState('content');
     const [textareaStyle, setTextareaStyle] = useState('mycomment-textarea-close');
-    let [writeUpdate, setWriteUpdate] = useState('');
+    let [writeUpdate, setWriteUpdate] = useState(message);
     // like displike button 
     const [likeStyle, setLikeStyle] = useState('like');
     const [dislikeStyle, setDislikeStyle] = useState('dislike');
