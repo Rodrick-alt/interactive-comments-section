@@ -3,10 +3,10 @@ import './Styles/Comment.css'
 import { useState } from 'react';
 import { useEffect } from 'react';
 import JsonData from './data.json';
-import ReplyIcon from './images/icon-reply.svg'
-import DeleteIcon from './images/icon-delete.svg'
-import EditIcon from './images/icon-edit.svg'
-import UserImage from './images/avatars/image-juliusomo.png'
+import ReplyIcon from './images/icon-reply.svg';
+import DeleteIcon from './images/icon-delete.svg';
+import EditIcon from './images/icon-edit.svg';
+import UserImage from './images/avatars/image-juliusomo.png';
 
 function App() {
   // an array of components describing comments & replies respectivily
@@ -16,11 +16,19 @@ function App() {
   // contains users text while adding a reply
   let writeReply = '';
 
-  // intitailizes View array with existing comments & replies
-  //from the imported json file
+  // intitailizes View array with existing comments & replies from imported json file
   useEffect(() => {
-    setView(old => setUp())
-  }, []);
+    setView(old => setUp());
+  }, [])
+
+  // LocalStorage: LogicFail.View is Populated with objects that have circular references.
+  // Therefore I con't stringify View and add it LocalStorage.
+
+
+  // New Comment TextArea Input
+  function HandleInput(event) {
+    setWriteComment(event.target.value);
+  }
 
   function setUp() {
     for (let i = 0; i < JsonData.comments.length; i++) {
@@ -99,10 +107,6 @@ function App() {
     return view;
   }
 
-  // New Comment TextArea Input
-  function HandleInput(event) {
-    setWriteComment(event.target.value);
-  }
 
   // Add new comment to commentArray
   function AddComment() {
@@ -127,7 +131,8 @@ function App() {
           index = (old.indexOf(old[i]));
       }
       // splicing in the new reply
-      old.splice((index + 1), 0,
+      let newArr = old.slice();
+      newArr.splice((index + 1), 0,
         <div className='replied'
           key={(`${Math.floor(Math.random() * 101)}NewR`)}
           idnum={(old.length + 1)}>
@@ -142,19 +147,22 @@ function App() {
             theUser={JsonData.currentUser.username}
           />
         </div>)
-      return [...old];
+      return [...newArr];
     });
   }
 
   function handleDelete(position) {
     setView(old => {
-      let index2 = 0;
+      // finding the correct index to delete
+      let index = 0;
       for (let i = 0; i < old.length; i++) {
         if (old[i].props.idnum === position)
-          index2 = old.indexOf(old[i])
+          index = old.indexOf(old[i])
       }
-      old.splice((index2), 1);
-      return [...old];
+      //deleting the comment
+      let newArr = old.slice();
+      newArr.splice((index), 1);
+      return [...newArr];
     });
   }
 
