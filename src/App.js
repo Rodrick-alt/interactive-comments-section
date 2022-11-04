@@ -21,8 +21,8 @@ function App() {
     setView(old => setUp());
   }, [])
 
-  // LocalStorage: LogicFail.View is Populated with objects that have circular references.
-  // Therefore I con't stringify View and add it LocalStorage.
+  // LocalStorage: Logic Fail. View[] is Populated with objects that have circular references.
+  // Therefore I con't stringify View[] and add it LocalStorage.
 
 
   // New Comment TextArea Input

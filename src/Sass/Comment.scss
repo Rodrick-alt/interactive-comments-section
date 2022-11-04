@@ -47,6 +47,7 @@
   /* Moderate blue */
 }
 .like-btn button{
+  display: flex;
   padding: 10px 10px;
   border: none;
   outline: none;
@@ -375,7 +376,7 @@ button:active{
     .like-btn div{
       display: flex;
       flex-flow: row;
-      justify-content: center;
+      justify-content: flex-end;
       align-items: center;
       width: fit-content;
       background: hsl(223, 19%, 93%);
