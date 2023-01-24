@@ -16,19 +16,18 @@ function App() {
   // contains users text while adding a reply
   let writeReply = '';
 
+
   // intitailizes View array with existing comments & replies from imported json file
   useEffect(() => {
     setView(old => setUp());
   }, [])
-
-  // LocalStorage: Logic Fail. View[] is Populated with objects that have circular references.
-  // Therefore I con't stringify View[] and add it LocalStorage.
 
 
   // New Comment TextArea Input
   function HandleInput(event) {
     setWriteComment(event.target.value);
   }
+
 
   function setUp() {
     for (let i = 0; i < JsonData.comments.length; i++) {
@@ -38,7 +37,7 @@ function App() {
         String(JsonData.currentUser.username)) {
         setView(old => [...old,
         <UserComment
-          key={`${Math.floor(Math.random() * 101)}C`}
+          key={`User Comment ${i}`}
           idnum={i}
           repliedto={''}
           image={JsonData.comments[i].user.image.png}
@@ -51,7 +50,7 @@ function App() {
       } else { // else add the comment with this component.
         setView(old => [...old,
         <Othercomment
-          key={`${Math.floor(Math.random() * 101)}C`}
+          key={`Other's Comment ${i}`}
           idnum={i}
           repliedto={''}
           image={JsonData.comments[i].user.image.png}
@@ -66,14 +65,14 @@ function App() {
       // If comments have replies, Add them commentArray
       if (JsonData.comments[i].replies.length > 0) {
         for (let k = 0; k < JsonData.comments[i].replies.length; k++) {
-          // if the reply is made by the users add it with this component
+          // if the reply is made by the user add it with this component
           if (String(JsonData.comments[i].replies[k].user.username)
             === String(JsonData.currentUser.username)) {
             setView(old => [...old,
             <div className='replied'
-              idnum={i + 1}>
+              idnum={i + 1}
+              key={`User Comment Reply ${i}`}>
               <UserComment
-                key={`${Math.floor(Math.random() * 101)}R`}
                 idnum={i + 1}
                 repliedto={`@${JsonData.comments[i].replies[0].user.username}`}
                 image={JsonData.comments[i].replies[k].user.image.png}
@@ -87,9 +86,9 @@ function App() {
           } else { // else add it with this component
             setView(old => [...old,
             <div className='replied'
-              idnum={i + 1}>
+              idnum={i + 1}
+              key={`Other's Comment Reply ${i}`}>
               <Othercomment
-                key={`${Math.floor(Math.random() * 101)}R`}
                 idnum={i + 1}
                 repliedto={`@${JsonData.comments[i].user.username}`}
                 image={JsonData.comments[i].replies[k].user.image.png}
@@ -110,46 +109,60 @@ function App() {
 
   // Add new comment to commentArray
   function AddComment() {
-    setView(old => [...old, <UserComment
-      key={(`${Math.floor(Math.random() * 101)}NewC`)}
-      idnum={old.length + 1}
-      image={JsonData.currentUser.image.png}
-      name={JsonData.currentUser.username}
-      score={0}
-      date={'today'}
-      content={writeComment}
-      theUser={JsonData.currentUser.username} />]);
+    if (writeComment !== '') {
+      setView(old => [...old,
+      <UserComment
+        key={(`New User Comment ${old.length + 1}`)}
+        idnum={old.length + 1}
+        image={JsonData.currentUser.image.png}
+        name={JsonData.currentUser.username}
+        score={0}
+        date={'today'}
+        content={writeComment}
+        theUser={JsonData.currentUser.username} />
+      ]);
+    }
+    setWriteComment(old => '');
+    document.getElementById('commentTextarea').value = '';
   }
+
+
 
   //Add new reply
   function HandleReplySend(replyText, position, repliedto) {
-    setView(old => {
-      // finding the correct index to splice in the new reply
-      let index = 0;
-      for (let i = 0; i < old.length; i++) {
-        if (old[i].props.idnum === position)
-          index = (old.indexOf(old[i]));
-      }
-      // splicing in the new reply
-      let newArr = old.slice();
-      newArr.splice((index + 1), 0,
-        <div className='replied'
-          key={(`${Math.floor(Math.random() * 101)}NewR`)}
-          idnum={(old.length + 1)}>
-          <UserComment
-            idnum={(old.length + 1)}
-            repliedto={'@' + repliedto}
-            image={JsonData.currentUser.image.png}
-            name={JsonData.currentUser.username}
-            score={0}
-            date={'today'}
-            content={replyText}
-            theUser={JsonData.currentUser.username}
-          />
-        </div>)
-      return [...newArr];
-    });
+    if (replyText !== '') {
+      setView(old => {
+        // finding the correct index to splice in the new reply
+        let index = 0;
+        for (let i = 0; i < old.length; i++) {
+          if (old[i].props.idnum === position)
+            index = (old.indexOf(old[i]));
+        }
+        // splicing in the new reply
+        let newArr = old.slice();
+        newArr.splice((index + 1), 0,
+          <div className='replied'
+            key={(`New User Reply${old.length + 1}`)}
+            idnum={(old.length + 1)}>
+            <UserComment
+              idnum={(old.length + 1)}
+              repliedto={'@' + repliedto}
+              image={JsonData.currentUser.image.png}
+              name={JsonData.currentUser.username}
+              score={0}
+              date={'today'}
+              content={replyText}
+              theUser={JsonData.currentUser.username}
+            />
+          </div>)
+        return [...newArr];
+      });
+    }
+    writeReply = '';
+    document.getElementById('replyTextarea').value = '';
   }
+
+
 
   function handleDelete(position) {
     setView(old => {
@@ -167,12 +180,13 @@ function App() {
   }
 
 
+
   //Other user Comments and replies Component
   function Othercomment(props) {
-    const [username, setUsername] = useState(props.name);
+    const [username] = useState(props.name);
     const [likes, setLikes] = useState(props.score);
-    const [createdAt, setCreatedAt] = useState(props.date);
-    const [message, setMessage] = useState(props.content);
+    const [createdAt] = useState(props.date);
+    const [message] = useState(props.content);
     const [rFormStyle, setRFormStyle] = useState('reply-form-close');
     const [likeStyle, setLikeStyle] = useState('like');
     const [dislikeStyle, setDislikeStyle] = useState('dislike');
@@ -263,8 +277,9 @@ function App() {
         {/* Reply Prompt dropdown */}
         <div className={rFormStyle}>
           <img className='form1' src={require(`./images/avatars/image-juliusomo.png`)} alt='' />
-          <textarea placeholder='Add a reply...'
-            onChange={(event) => writeReply = (event.target.value)} />
+          <textarea id='replyTextarea' placeholder='Add a reply...'
+            onChange={(event) => writeReply = (event.target.value)}>
+          </textarea>
           <button className='form1'
             onClick={() => { HandleReplySendBtn() }}>REPLY</button>
           {/* Mobile swap outs */}
@@ -278,11 +293,13 @@ function App() {
   }
 
 
+
+
   // The current User's Comments and replies Component
   function UserComment(props) {
-    const [username, setUsername] = useState(props.name);
+    const [username] = useState(props.name);
     const [likes, setLikes] = useState(props.score);
-    const [createdAt, setCreatedAt] = useState(props.date);
+    const [createdAt] = useState(props.date);
     const [message, setMessage] = useState(props.content);
     const [modelStyle, setModelStyle] = useState('model-view-close');
     const [updateBtnStyle, setUpdateBtnStyle] = useState('update-btn-close');
@@ -346,11 +363,13 @@ function App() {
       } else {
         setModelStyle(old => { return 'model-view-close' });
       }
+      document.getElementsByTagName('html')[0].style.overflowY = 'hidden';
     }
 
     function HandleDeleteReply(position) {
       HandleRemove();
       handleDelete(position);
+      document.getElementsByTagName('html')[0].style.overflowY = 'auto';
     }
 
     return (
@@ -445,6 +464,9 @@ function App() {
     )
   }
 
+
+
+
   return (
     <div id='page-wrapper'>
       <div id='comments-wrapper'>
@@ -452,7 +474,7 @@ function App() {
         {/* Write a New Comment */}
         <div className='new-comment'>
           <img className='form1' src={UserImage} alt='' />
-          <textarea placeholder='Add a comment...'
+          <textarea id='commentTextarea' placeholder='Add a comment...'
             onChange={HandleInput}>
           </textarea>
           <button className='form1'

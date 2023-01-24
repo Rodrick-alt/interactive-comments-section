@@ -1,3 +1,22 @@
+/* No hover effects on touch ***********************************/
+@media (hover: hover) and (pointer: fine) {
+  .reply-btn:hover, .reply-btn img:hover, 
+  .reply-form button:hover, .new-comment button:hover,
+  .update-btn:hover{
+    transition: .2s ease-out;
+    opacity: .7;
+  }
+  .edit-btn:hover,
+  .delete-btn:hover{
+    opacity: .7;
+  }
+  .like-btn button:hover svg{
+    color: hsl(238, 40%, 52%);
+  }
+}
+
+
+/* ****************************************************************/
 .wrapper{
   display: flex;
   flex-flow: column nowrap;
@@ -14,14 +33,15 @@
   flex-flow: row wrap;
   justify-content: space-between;
   align-items: flex-start;
+  gap: 24px;
   width: 100%;
-  background: white;
-  border-radius: 5px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
   min-height: 10rem;
   height: auto;
   padding: 25px;
-  gap: 24px;
+  background: white;
+  border: 1px solid rgba(0, 0, 0,.5);
+  border-radius: 5px;
+  box-shadow: 0px 5px 5px 0px rgb(0 0 0 / 20%);
 }
 .comment>*{
   flex: 0 1 auto;
@@ -29,6 +49,7 @@
 .comment .body{
   flex: 4;
 }
+
 
 .like-btn, .like-btn div{
   display: flex;
@@ -39,12 +60,10 @@
   gap: 10px;
   border-radius: 10px;
   background: hsl(223, 19%, 93%);
-  /* Light gray */
 }
 .like-btn p, .reply-btn{
   font-weight: 700;
   color: hsl(238, 40%, 52%);
-  /* Moderate blue */
 }
 .like-btn button{
   display: flex;
@@ -61,6 +80,7 @@
   color: hsl(238, 40%, 52%) !important;
 }
 
+
 .body{
   display: flex;
   flex-flow: column nowrap;
@@ -69,6 +89,7 @@
   row-gap: 10px;
   width: 100%;
 }
+
 
 .header, .header div{
   display: flex;
@@ -111,11 +132,11 @@
   color: hsl(238, 40%, 52%);
   font-weight: 700;
 }
-
 /* mycontent message close */
 .content-close{
   display: none;
 }
+
 
 .reply-btn,.edit-btn,.delete-btn{
   display: flex;
@@ -142,6 +163,7 @@
   width: auto;
 }
 
+
 /* reply-form: The box to write new replies in */
 /* new-comment: The box to write new comments in */
 .reply-form, .new-comment{
@@ -153,10 +175,11 @@
     margin-top: 1rem;
     background: white;
     border-radius: 5px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
     height: 10rem;
     padding: 25px;
     gap: 24px;
+    border: 1px solid rgba(0, 0, 0,.5);
+    box-shadow: 0px 5px 5px 0px rgb(0 0 0 / 20%);
 }
 .new-comment{
     width: 50%;
@@ -164,12 +187,10 @@
 .reply-form-mobile{
   display: none;
 }
-
 /* reply-form close css */
 .reply-form-close{
   display: none;
 }
-
 .reply-form>*, 
 .new-comment>* 
 .reply-form-open>*{
@@ -189,11 +210,12 @@
     height: 100%;
     border: none;
     outline: none;
-    padding: 10px;
-    border: 2px solid hsl(228, 33%, 97%);
+    padding: 1rem;
     text-overflow: inherit;
     resize: none;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(0, 0, 0,.4);
+    border-radius: 5px;
+    box-shadow: 1px 2px 3px 2px rgb(0 0 0 / 20%);
 }
 /* general button style  */
 .reply-form button, .new-comment button, 
@@ -203,7 +225,7 @@
     height: 2.8rem;
     border: none;
     outline: none;
-    border-radius: 10px;
+    border-radius: 5px;
     font-weight: 600;
     color: white;
     cursor: pointer;
@@ -212,6 +234,8 @@
 button:active{
   transform: scale(1.07);
 }
+
+
 
 /* Mycomments: Styling for Comments and Relies that are made by the user */
 .edit-options{
@@ -234,6 +258,7 @@ button:active{
 .update-btn-close{
   display: none;
 }
+
 
 
 /* Model: Model-view for delete button */
@@ -291,24 +316,6 @@ button:active{
 #model div button:nth-child(2){
   background-color: hsl(358, 79%, 66%);
 }
-/* No hover effects on touch ***********************************/
-@media (hover: hover) and (pointer: fine) {
-  .reply-btn:hover, .reply-btn img:hover, 
-  .reply-form button:hover, .new-comment button:hover,
-  .update-btn:hover{
-    transition: .2s ease-out;
-    opacity: .7;
-  }
-  .edit-btn:hover{
-    color:hsl(239, 57%, 85%);
-  }
-  .delete-btn:hover{
-    color:hsl(357, 100%, 86%);
-  }
-  .like-btn button:hover svg{
-    color: hsl(238, 40%, 52%);
-  }
-}
 
 
 
@@ -331,7 +338,6 @@ button:active{
   .replied{
       width: 100%;
       max-width: 425px;
-      border-left: 1px solid black;
       row-gap: 1rem;
   }
   .replied .wrapper{
