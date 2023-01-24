@@ -66,9 +66,13 @@ main {
     width: 100%;
 }
 .replied .wrapper{
-    width: 90%;
+    width: 100%;
 }
-
+.replied .wrapper .comment, 
+.replied .wrapper .reply-form{
+    width: 90%;
+    align-self: flex-end;
+}
 
 
 @keyframes flipdown {

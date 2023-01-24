@@ -10,29 +10,25 @@ import UserImage from './images/avatars/image-juliusomo.png';
 
 function App() {
   // an array of components describing comments & replies respectivily
-  let [view, setView] = useState([]);
+  const [view, setView] = useState([]);
   // contains users text while adding new comment
-  let [writeComment, setWriteComment] = useState('');
-  // contains users text while adding a reply
-  let writeReply = '';
+  const [writeComment, setWriteComment] = useState('');
+  // Delete comment/reply array position
+  const [deletePosition, setdeletePosition] = useState();
+  // Delete model style
+  const [modelStyle, setModelStyle] = useState('model-view-close');
 
-
-  // intitailizes View array with existing comments & replies from imported json file
+  // intitailizes View array with existing comments-
+  // & replies from imported json file
   useEffect(() => {
     setView(old => setUp());
   }, [])
 
 
-  // New Comment TextArea Input
-  function HandleInput(event) {
-    setWriteComment(event.target.value);
-  }
-
-
   function setUp() {
     for (let i = 0; i < JsonData.comments.length; i++) {
       //If the comment is made by the current user
-      // add the comment with using this component.
+      // add the comment using this component.
       if (String(JsonData.comments[i].user.username) ===
         String(JsonData.currentUser.username)) {
         setView(old => [...old,
@@ -62,7 +58,7 @@ function App() {
         ])
       }
 
-      // If comments have replies, Add them commentArray
+      // If comments have replies, Add them comment array
       if (JsonData.comments[i].replies.length > 0) {
         for (let k = 0; k < JsonData.comments[i].replies.length; k++) {
           // if the reply is made by the user add it with this component
@@ -107,8 +103,13 @@ function App() {
   }
 
 
-  // Add new comment to commentArray
-  function AddComment() {
+  // New Comment TextArea Input
+  function handleInput(event) {
+    setWriteComment(event.target.value);
+  }
+
+  // Add new comment to array
+  function addComment() {
     if (writeComment !== '') {
       setView(old => [...old,
       <UserComment
@@ -126,45 +127,38 @@ function App() {
     document.getElementById('commentTextarea').value = '';
   }
 
-
-
-  //Add new reply
-  function HandleReplySend(replyText, position, repliedto) {
-    if (replyText !== '') {
-      setView(old => {
-        // finding the correct index to splice in the new reply
-        let index = 0;
-        for (let i = 0; i < old.length; i++) {
-          if (old[i].props.idnum === position)
-            index = (old.indexOf(old[i]));
-        }
-        // splicing in the new reply
-        let newArr = old.slice();
-        newArr.splice((index + 1), 0,
-          <div className='replied'
-            key={(`New User Reply${old.length + 1}`)}
-            idnum={(old.length + 1)}>
-            <UserComment
-              idnum={(old.length + 1)}
-              repliedto={'@' + repliedto}
-              image={JsonData.currentUser.image.png}
-              name={JsonData.currentUser.username}
-              score={0}
-              date={'today'}
-              content={replyText}
-              theUser={JsonData.currentUser.username}
-            />
-          </div>)
-        return [...newArr];
-      });
-    }
-    writeReply = '';
-    document.getElementById('replyTextarea').value = '';
+  //Add new reply to array
+  function handleReplySend(replyText, position, repliedto) {
+    setView(old => {
+      // finding the correct index to splice in the new reply
+      let index = 0;
+      for (let i = 0; i < old.length; i++) {
+        if (old[i].props.idnum === position)
+          index = (old.indexOf(old[i]));
+      }
+      // splicing in the new reply
+      let newArr = old.slice();
+      newArr.splice((index + 1), 0,
+        <div className='replied'
+          key={(`New User Reply${old.length + 1}`)}
+          idnum={(old.length + 1)}>
+          <UserComment
+            idnum={(old.length + 1)}
+            repliedto={'@' + repliedto}
+            image={JsonData.currentUser.image.png}
+            name={JsonData.currentUser.username}
+            score={0}
+            date={'today'}
+            content={replyText}
+            theUser={JsonData.currentUser.username}
+          />
+        </div>)
+      return [...newArr];
+    });
   }
 
 
-
-  function handleDelete(position) {
+  function handleDeletion(position) {
     setView(old => {
       // finding the correct index to delete
       let index = 0;
@@ -179,9 +173,21 @@ function App() {
     });
   }
 
+  function handleDeletePrep(num) {
+    if (modelStyle === 'model-view-close') {
+      setModelStyle(old => { return 'model-view' });
+      document.getElementsByTagName('html')[0].style.overflowY = 'hidden';
+    } else {
+      setModelStyle(old => { return 'model-view-close' });
+      document.getElementsByTagName('html')[0].style.overflowY = 'auto';
+    }
+    setdeletePosition(old => num);
+  }
 
 
-  //Other user Comments and replies Component
+
+
+  //Other user's Comments and replies Component
   function Othercomment(props) {
     const [username] = useState(props.name);
     const [likes, setLikes] = useState(props.score);
@@ -190,8 +196,16 @@ function App() {
     const [rFormStyle, setRFormStyle] = useState('reply-form-close');
     const [likeStyle, setLikeStyle] = useState('like');
     const [dislikeStyle, setDislikeStyle] = useState('dislike');
+    // contains users text while adding a reply
+    const [writeReply, setWriteReply] = useState('');
 
-    function HandleLike(rating) {
+
+    // New Reply TextArea Input
+    function handleReplyInput(event) {
+      setWriteReply(event.target.value);
+    }
+
+    function handleLike(rating) {
       if (rating === '+1' && likes < props.score + 1) {
         setLikeStyle(old => { return 'liked' });
         setDislikeStyle(old => { return 'dislike' });
@@ -216,7 +230,7 @@ function App() {
       }
     }
 
-    function HandleReplyBtn() {
+    function handleReplyBtn() {
       if (rFormStyle === 'reply-form-close') {
         setRFormStyle(old => { return 'reply-form' });
       } else {
@@ -224,10 +238,18 @@ function App() {
       }
     }
 
-    function HandleReplySendBtn() {
-      HandleReplyBtn();
-      HandleReplySend(writeReply, props.idnum, props.name);
+    function handleReplySendBtn() {
+      let replyTextareas = document.getElementsByClassName('replyTextarea');
+      if (writeReply !== '') {
+        handleReplyBtn();
+        handleReplySend(writeReply, props.idnum, props.name);
+      }
+      setWriteReply(old => '');
+      for (let i = 0; i < replyTextareas.length; i++) {
+        document.getElementsByClassName('replyTextarea')[i].value = '';
+      }
     }
+
 
     return (
       <div className='wrapper'>
@@ -236,19 +258,19 @@ function App() {
           <div className='like-btn'>
             <div>
               <button className={likeStyle}
-                onClick={() => { HandleLike("+1") }}>
+                onClick={() => { handleLike("+1") }}>
                 <svg width="11" height="11" xmlns="http://www.w3.org/2000/svg"><path d="M6.33 10.896c.137 0 .255-.05.354-.149.1-.1.149-.217.149-.354V7.004h3.315c.136 0 .254-.05.354-.149.099-.1.148-.217.148-.354V5.272a.483.483 0 0 0-.148-.354.483.483 0 0 0-.354-.149H6.833V1.4a.483.483 0 0 0-.149-.354.483.483 0 0 0-.354-.149H4.915a.483.483 0 0 0-.354.149c-.1.1-.149.217-.149.354v3.37H1.08a.483.483 0 0 0-.354.15c-.1.099-.149.217-.149.353v1.23c0 .136.05.254.149.353.1.1.217.149.354.149h3.333v3.39c0 .136.05.254.15.353.098.1.216.149.353.149H6.33Z" fill="currentColor" /></svg>
               </button>
               <p>{likes}</p>
               <button className={dislikeStyle}
-                onClick={() => { HandleLike("-1") }}>
+                onClick={() => { handleLike("-1") }}>
                 <svg width="11" height="3" xmlns="http://www.w3.org/2000/svg"><path d="M9.256 2.66c.204 0 .38-.056.53-.167.148-.11.222-.243.222-.396V.722c0-.152-.074-.284-.223-.395a.859.859 0 0 0-.53-.167H.76a.859.859 0 0 0-.53.167C.083.437.009.57.009.722v1.375c0 .153.074.285.223.396a.859.859 0 0 0 .53.167h8.495Z" fill="currentColor" /></svg>
               </button>
             </div>
 
             {/* Reply button mobile */}
             <button className='reply-btn reply-btn-mobile'
-              onClick={() => { HandleReplyBtn() }}>
+              onClick={handleReplyBtn}>
               <img src={ReplyIcon} alt='' /> Reply
             </button>
 
@@ -263,7 +285,7 @@ function App() {
               </div>
               {/* Reply button */}
               <button className='reply-btn'
-                onClick={() => { HandleReplyBtn() }}>
+                onClick={handleReplyBtn}>
                 <img src={ReplyIcon} alt='' /> Reply
               </button>
             </div>
@@ -277,21 +299,20 @@ function App() {
         {/* Reply Prompt dropdown */}
         <div className={rFormStyle}>
           <img className='form1' src={require(`./images/avatars/image-juliusomo.png`)} alt='' />
-          <textarea id='replyTextarea' placeholder='Add a reply...'
-            onChange={(event) => writeReply = (event.target.value)}>
+          <textarea className='replyTextarea' placeholder='Add a reply...'
+            onChange={handleReplyInput}>
           </textarea>
           <button className='form1'
-            onClick={() => { HandleReplySendBtn() }}>REPLY</button>
+            onClick={handleReplySendBtn}>REPLY</button>
           {/* Mobile swap outs */}
           <div className='reply-form-mobile'>
             <img src={require(`./images/avatars/image-${props.theUser}.png`)} alt='' />
-            <button onClick={() => { HandleReplySendBtn() }} >REPLY</button>
+            <button onClick={handleReplySendBtn} >REPLY</button>
           </div>
         </div>
       </div>
     )
   }
-
 
 
 
@@ -301,16 +322,15 @@ function App() {
     const [likes, setLikes] = useState(props.score);
     const [createdAt] = useState(props.date);
     const [message, setMessage] = useState(props.content);
-    const [modelStyle, setModelStyle] = useState('model-view-close');
     const [updateBtnStyle, setUpdateBtnStyle] = useState('update-btn-close');
     const [contentStyle, setContentStyle] = useState('content');
     const [textareaStyle, setTextareaStyle] = useState('mycomment-textarea-close');
-    let [writeUpdate, setWriteUpdate] = useState(message);
+    const [writeUpdate, setWriteUpdate] = useState(message);
     // like displike button 
     const [likeStyle, setLikeStyle] = useState('like');
     const [dislikeStyle, setDislikeStyle] = useState('dislike');
 
-    function HandleLike(rating) {
+    function handleLike(rating) {
       if (rating === '+1' && likes < props.score + 1) {
         setLikeStyle(old => { return 'liked' });
         setDislikeStyle(old => { return 'dislike' });
@@ -336,16 +356,16 @@ function App() {
     }
 
     // update reply TextArea Input
-    function HandleInputUpdate(event) {
+    function handleInputUpdate(event) {
       setWriteUpdate(event.target.value)
     }
 
-    function HandleUpdate() {
-      HandleEdit();
+    function handleUpdate() {
+      handleEdit();
       setMessage(writeUpdate);
     }
 
-    function HandleEdit() {
+    function handleEdit() {
       if (updateBtnStyle === 'update-btn-close') {
         setUpdateBtnStyle(old => { return 'update-btn' });
         setContentStyle(old => { return 'content-close' });
@@ -357,20 +377,6 @@ function App() {
       }
     }
 
-    function HandleRemove() {
-      if (modelStyle === 'model-view-close') {
-        setModelStyle(old => { return 'model-view' });
-      } else {
-        setModelStyle(old => { return 'model-view-close' });
-      }
-      document.getElementsByTagName('html')[0].style.overflowY = 'hidden';
-    }
-
-    function HandleDeleteReply(position) {
-      HandleRemove();
-      handleDelete(position);
-      document.getElementsByTagName('html')[0].style.overflowY = 'auto';
-    }
 
     return (
       <div className='wrapper'>
@@ -379,12 +385,12 @@ function App() {
           <div className='like-btn'>
             <div>
               <button className={likeStyle}
-                onClick={() => { HandleLike('+1') }}>
+                onClick={() => { handleLike('+1') }}>
                 <svg width="11" height="11" xmlns="http://www.w3.org/2000/svg"><path d="M6.33 10.896c.137 0 .255-.05.354-.149.1-.1.149-.217.149-.354V7.004h3.315c.136 0 .254-.05.354-.149.099-.1.148-.217.148-.354V5.272a.483.483 0 0 0-.148-.354.483.483 0 0 0-.354-.149H6.833V1.4a.483.483 0 0 0-.149-.354.483.483 0 0 0-.354-.149H4.915a.483.483 0 0 0-.354.149c-.1.1-.149.217-.149.354v3.37H1.08a.483.483 0 0 0-.354.15c-.1.099-.149.217-.149.353v1.23c0 .136.05.254.149.353.1.1.217.149.354.149h3.333v3.39c0 .136.05.254.15.353.098.1.216.149.353.149H6.33Z" fill="currentColor" /></svg>
               </button>
               <p>{likes}</p>
               <button className={dislikeStyle}
-                onClick={() => { HandleLike('-1') }}>
+                onClick={() => { handleLike('-1') }}>
                 <svg width="11" height="3" xmlns="http://www.w3.org/2000/svg"><path d="M9.256 2.66c.204 0 .38-.056.53-.167.148-.11.222-.243.222-.396V.722c0-.152-.074-.284-.223-.395a.859.859 0 0 0-.53-.167H.76a.859.859 0 0 0-.53.167C.083.437.009.57.009.722v1.375c0 .153.074.285.223.396a.859.859 0 0 0 .53.167h8.495Z" fill="currentColor" /></svg>
               </button>
             </div>
@@ -392,12 +398,12 @@ function App() {
             <div className='header-btn header-btn-mobile'>
               {/* Delete button */}
               <button className='delete-btn'
-                onClick={() => { HandleRemove() }}>
+                onClick={() => { handleDeletePrep(props.idnum) }}>
                 <img src={DeleteIcon} alt='' /> Delete
               </button>
               {/* Edit button */}
               <button className='edit-btn'
-                onClick={() => { HandleEdit() }}>
+                onClick={() => { handleEdit() }}>
                 <img src={EditIcon} alt='' /> Edit
               </button>
             </div>
@@ -416,12 +422,12 @@ function App() {
               <div className='header-btn'>
                 {/* Delete button */}
                 <button className='delete-btn'
-                  onClick={() => { HandleRemove() }}>
+                  onClick={() => { handleDeletePrep(props.idnum) }}>
                   <img src={DeleteIcon} alt='' /> Delete
                 </button>
                 {/* Edit button */}
                 <button className='edit-btn'
-                  onClick={() => { HandleEdit() }}>
+                  onClick={() => { handleEdit() }}>
                   <img src={EditIcon} alt='' /> Edit
                 </button>
               </div>
@@ -435,28 +441,14 @@ function App() {
               {/* on edit button textarea */}
               <textarea className={textareaStyle}
                 defaultValue={message}
-                onChange={HandleInputUpdate}>
+                onChange={handleInputUpdate}>
 
               </textarea>
               {/* Update Button */}
               <button className={updateBtnStyle}
-                onClick={HandleUpdate}>
+                onClick={handleUpdate}>
                 UPDATE
               </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Delete Model */}
-        <div id={modelStyle}>
-          <div id='model'>
-            <p>Delete comment</p>
-            <p>Are you sure you want to delete this comment?
-              This will remove the comment and can't be undone.
-            </p>
-            <div>
-              <button onClick={() => { HandleRemove() }}>No, Cancel</button>
-              <button onClick={() => { HandleDeleteReply(props.idnum) }}>Yes, Delete</button>
             </div>
           </div>
         </div>
@@ -469,20 +461,40 @@ function App() {
 
   return (
     <div id='page-wrapper'>
+
+      {/* Delete Model */}
+      <div id={modelStyle}>
+        <div id='model'>
+          <p>Delete comment</p>
+          <p>Are you sure you want to delete this comment?
+            This will remove the comment and can't be undone.
+          </p>
+          <div>
+            <button onClick={() => { handleDeletePrep() }}>No, Cancel</button>
+            <button onClick={() => {
+              handleDeletePrep();
+              handleDeletion(deletePosition);
+            }}>
+              Yes, Delete
+            </button>
+          </div>
+        </div>
+      </div>
+
       <div id='comments-wrapper'>
         {view}
         {/* Write a New Comment */}
         <div className='new-comment'>
           <img className='form1' src={UserImage} alt='' />
           <textarea id='commentTextarea' placeholder='Add a comment...'
-            onChange={HandleInput}>
+            onChange={handleInput}>
           </textarea>
           <button className='form1'
-            onClick={AddComment}>SEND</button>
+            onClick={addComment}>SEND</button>
           {/* Mobile Swap-out for reply form */}
           <div className='reply-form-mobile'>
             <img src={UserImage} alt='' />
-            <button onClick={AddComment}>SEND</button>
+            <button onClick={addComment}>SEND</button>
           </div>
         </div>
       </div>
