@@ -58,7 +58,7 @@ function App() {
         ])
       }
 
-      // If comments have replies, Add them comment array
+      // If comments have replies
       if (JsonData.comments[i].replies.length > 0) {
         for (let k = 0; k < JsonData.comments[i].replies.length; k++) {
           // if the reply is made by the user add it with this component
@@ -455,8 +455,6 @@ function App() {
       </div>
     )
   }
-
-
 
 
   return (

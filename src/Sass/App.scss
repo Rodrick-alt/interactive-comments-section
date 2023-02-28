@@ -99,7 +99,6 @@ main {
 }
 
 
-
 /* Small devices (portrait tablets and large phones, 600px and up) */
 @media only screen and (min-width: 600px) {
 }
@@ -111,11 +110,11 @@ main {
 /* Large devices (laptops/desktops, 992px and up) */
 @media only screen and (min-width: 992px) and (max-width: 1024px) {
     .wrapper{
-        width: 60% !important;
+        width: 65% !important;
     }
     /* already writen replies being displayed */
     .replied{
-        width: 60% !important;
+        width: 65% !important;
     }
     .replied--special{
         width: 100%;
@@ -124,7 +123,7 @@ main {
         width: 90% !important;
     }
     .new-comment {
-        width: 60% !important;
+        width: 65% !important;
     }
 }
 /* Extra large devices (large laptops and desktops, 1200px and up) */
