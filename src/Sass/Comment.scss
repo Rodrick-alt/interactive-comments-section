@@ -41,7 +41,8 @@
   background: white;
   border: 1px solid rgba(0, 0, 0,.5);
   border-radius: 5px;
-  box-shadow: 0px 5px 5px 0px rgb(0 0 0 / 20%);
+  // box-shadow: 0px 5px 0px 0px rgb(0 0 0 / 20%);
+  box-shadow: 4px 4px 0px 0px rgb(0 0 0 / 50%);
 }
 .comment>*{
   flex: 0 1 auto;
@@ -50,30 +51,33 @@
   flex: 4;
 }
 
-
-.like-btn, .like-btn div{
+// Like Component
+.like-div{
   display: flex;
   flex-flow: column wrap;
   justify-content: center;
   align-items: center;
+  text-align: center;
   height: fit-content;
   gap: 10px;
   border-radius: 10px;
   background: hsl(223, 19%, 93%);
 }
-.like-btn p, .reply-btn{
+.like-div p, .reply-btn{
   font-weight: 700;
   color: hsl(238, 40%, 52%);
 }
-.like-btn button{
+.like-div button{
   display: flex;
-  padding: 10px 10px;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
   border: none;
   outline: none;
   background: transparent;
   cursor: pointer;
 }
-.like-btn button svg{
+.like-div button svg{
   color: #C5C6EF;
 }
 .liked svg, .disliked svg{
@@ -179,7 +183,8 @@
     padding: 25px;
     gap: 24px;
     border: 1px solid rgba(0, 0, 0,.5);
-    box-shadow: 0px 5px 5px 0px rgb(0 0 0 / 20%);
+    // box-shadow: 0px 4px 0px 0px #000000c4;
+    box-shadow: 4px 4px 0px 0px rgb(0 0 0 / 50%);
 }
 .new-comment{
     width: 50%;
@@ -215,7 +220,8 @@
     resize: none;
     border: 1px solid rgba(0, 0, 0,.4);
     border-radius: 5px;
-    box-shadow: 1px 2px 3px 2px rgb(0 0 0 / 20%);
+    // box-shadow: 1px 2px 3px 2px rgb(0 0 0 / 20%);
+    // box-shadow: 2px 2px 0px 0px rgb(0 0 0 / 50%);
 }
 /* general button style  */
 .reply-form button, .new-comment button, 
@@ -290,6 +296,7 @@ button:active{
   padding: 1rem;
   border-radius: 10px;
   background: white;
+  box-shadow: 4px 4px 0px 0px rgb(0 0 0 / 100%);
 }
 #model-view-close{
   display: none;
@@ -324,25 +331,46 @@ button:active{
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*  CSS MEDIA QUERIES******************************************************* */
 /* Extra small devices (phones, 600px and down) */
 @media only screen and (max-width: 600px) {
   #comments-wrapper{
       row-gap: 1rem;
       width: 100%;
-      height: auto;
       margin-top: 2rem;
       margin-bottom: 3rem;
-      padding: 0 1.5rem;
+      padding: 0 1rem;
   }
   /* already writen replies being displayed */
   .replied{
       width: 100%;
       max-width: 425px;
       row-gap: 1rem;
-  }
-  .replied .wrapper{
-      width: 95%;
   }
 
   /* COMMENTS CSS *****************************************************/
@@ -360,14 +388,13 @@ button:active{
       width: 100%;
       background: white;
       border-radius: 5px;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
       min-height: 10rem;
       height: auto;
       padding: 1rem;
       gap: 24px;
     }
     
-    .like-btn{
+    .like-container{
       display: flex;
       flex-flow: row;
       justify-content: space-between;
@@ -379,28 +406,25 @@ button:active{
       border-radius: 5px;
       padding: .5rem;
       background-color: transparent;
-    }
-    .like-btn div{
-      display: flex;
-      flex-flow: row;
-      justify-content: flex-end;
-      align-items: center;
-      width: fit-content;
-      background: hsl(223, 19%, 93%);
+
+      .like-div{
+        flex-flow: row;
+        justify-content: flex-end;
+        align-items: center;
+        width: fit-content;
+        background: hsl(223, 19%, 93%);
+      }
     }
     .header-btn-mobile{
-      display: flex;
-      flex-flow: row wrap !important;
-      justify-content: center;
+      flex-flow: row !important;
+      justify-content: space-between;
       align-items: center;
       gap: 5px !important;
     }
-
     .header img{
       width: 30px;
       height: auto;
     }
-
     .reply-btn{
       display: none;
     }
@@ -420,7 +444,6 @@ button:active{
         margin-top: 1rem;
         background: white;
         border-radius: 5px;
-        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
         height: 10rem;
         padding: 10px;
         gap: 15px;
@@ -457,13 +480,13 @@ button:active{
     .form1{
       display: none;
     }
-   .reply-form-mobile{
-     display: flex;
-     flex-flow: row ;
-     justify-content: space-between;
-     align-items: center;
-     width: 100%;
-   }
+    .reply-form-mobile{
+      display: flex;
+      flex-flow: row ;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
     /* Mycomments: Comments and Relies that are made by the user */
     .edit-options{
       display: flex;
@@ -492,23 +515,20 @@ button:active{
 
 
 /* Small devices (portrait tablets and large phones, 600px and up) */
-@media only screen and (min-width: 600px) and (max-width: 992px) {
+@media only screen and (min-width: 602px) and (max-width: 992px) {
   #comments-wrapper{
     row-gap: 1rem;
     width: 100%;
     height: auto;
     margin-top: 2rem;
     margin-bottom: 3rem;
-    padding: 0 1.5rem;
+    padding: 0 2rem;
 }
 /* already writen replies being displayed */
 .replied{
     width: 100%;
     max-width: 425px;
     row-gap: 1rem;
-}
-.replied .wrapper{
-    width: 95%;
 }
 
 /* COMMENTS CSS *****************************************************/
@@ -526,14 +546,13 @@ button:active{
     width: 100%;
     background: white;
     border-radius: 5px;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
     min-height: 10rem;
     height: auto;
     padding: 1rem;
     gap: 24px;
   }
   
-  .like-btn{
+  .like-container{
     display: flex;
     flex-flow: row;
     justify-content: space-between;
@@ -545,14 +564,13 @@ button:active{
     border-radius: 5px;
     padding: .5rem;
     background-color: transparent;
-  }
-  .like-btn div{
-    display: flex;
-    flex-flow: row;
-    justify-content: center;
-    align-items: center;
-    width: fit-content;
-    background: hsl(223, 19%, 93%);
+    .like-div{
+      flex-flow: row;
+      justify-content: flex-end;
+      align-items: center;
+      width: fit-content;
+      background: hsl(223, 19%, 93%);
+    }
   }
   .header-btn-mobile{
     display: flex;
@@ -586,7 +604,6 @@ button:active{
       margin-top: 1rem;
       background: white;
       border-radius: 5px;
-      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
       height: 10rem;
       padding: 10px;
       gap: 15px;
@@ -623,14 +640,13 @@ button:active{
   .form1{
     display: none;
   }
- .reply-form-mobile{
-   display: flex;
-   flex-flow: row ;
-   justify-content: space-between;
-   align-items: center;
-   width: 100%;
- }
-
+.reply-form-mobile{
+  display: flex;
+  flex-flow: row ;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
   /* Mycomments: Comments and Relies that are made by the user */
   .header-btn{
     display: none !important;
@@ -640,5 +656,4 @@ button:active{
     flex-flow: row wrap;
     background-color: transparent !important;
   }
-
 }
