@@ -49,6 +49,7 @@
 }
 .comment .body{
   flex: 4;
+  max-width: 567.969px;
 }
 
 // Like Component
@@ -130,7 +131,7 @@
   color: hsl(211, 10%, 45%);
   width: 100%;
   height: auto;
-  overflow-y: auto;
+  overflow: hidden;
 }
 .content p em{
   color: hsl(238, 40%, 52%);
